@@ -16,7 +16,7 @@
      ("org" . "http://orgmode.org/elpa/"))))
  '(package-selected-packages
    (quote
-    (cmake-mode counsel-etags ac-etags helm-etags-plus helm-cscope helm company irony hydra magit color-theme swiper)))
+    (idle-highlight-mode cmake-mode counsel-etags ac-etags helm-etags-plus helm-cscope helm company irony hydra magit color-theme swiper)))
  '(safe-local-variable-values (quote ((encoding . utf-8)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -24,6 +24,40 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+ ;--------------------------------------------------------------------------------------------------------
+;;zvacsenie zmansenie pisma
+;;ctrl x ctrl +
+;;ctrl x ctrl -
+
+;;select rectangle of text
+;;ctrl-x space
+;;M-x (rectangle-mark-mode)
+
+;;Prvy Znak V Kazdom Slove Vybranej Oblasti
+;;M-x (capitalize-region)
+;;M-x (upcase-initials-region
+
+;;selectovana oblast na vsetko velke
+;;M-x (upcase-region)
+
+;;selectovana oblast na vsetko male
+;;M-x (downcase-region)
+
+;;text na zaciatok kazdeho riadku (select oblasti)
+;;M-x (string-insert-rectangle)
+
+;;text na koniec kazdeho riadku (select oblasti)
+;;M-x (replace-regexp) RET $ RET text RET  (RET - enter)
+
+;;autometicke doplnanie
+;;M-x(global-auto-complete-mode t)
+;;company-mode is better
+
+;;highlight words
+;;M-x(idle-highlight-mode)
+;;--------------------------------------------------------------------------------------------------------
+
 
 ;;(load-theme 'sanityinc-solarized-dark t)
 
@@ -91,7 +125,6 @@
 
 ;;numbers of lines
 (global-display-line-numbers-mode 1)
-
 
 (ivy-mode 1)
 (setq ivy-use-virtual-buffers t)
