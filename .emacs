@@ -16,7 +16,7 @@
      ("org" . "http://orgmode.org/elpa/"))))
  '(package-selected-packages
    (quote
-    (idle-highlight-mode cmake-mode counsel-etags ac-etags helm-etags-plus helm-cscope helm company irony hydra magit color-theme swiper)))
+    (phi-search wgrep undo-tree hlint-refactor clang-format idle-highlight-mode cmake-mode counsel-etags ac-etags helm-etags-plus helm-cscope helm company irony hydra magit color-theme swiper)))
  '(safe-local-variable-values (quote ((encoding . utf-8)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -32,6 +32,7 @@
 
 ;;select rectangle of text
 ;;ctrl-x space
+;;ctrl-RET (RET - enter)
 ;;M-x (rectangle-mark-mode)
 
 ;;Prvy Znak V Kazdom Slove Vybranej Oblasti
@@ -48,7 +49,7 @@
 ;;M-x (string-insert-rectangle)
 
 ;;text na koniec kazdeho riadku (select oblasti)
-;;M-x (replace-regexp) RET $ RET text RET  (RET - enter)
+;;M-x (replace-regexp) RET $ RET text RET
 
 ;;autometicke doplnanie
 ;;M-x(global-auto-complete-mode t)
@@ -57,7 +58,6 @@
 ;;highlight words
 ;;M-x(idle-highlight-mode)
 ;;--------------------------------------------------------------------------------------------------------
-
 
 ;;(load-theme 'sanityinc-solarized-dark t)
 
@@ -73,9 +73,26 @@
 (setq frame-title-format
       '("" invocation-name ": "(:eval (if buffer-file-name (abbreviate-file-name buffer-file-name) "%b"))))
 
+;;namiesto <esc> <esc> <esc> (3x esc)
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+
+;;zabrani zatvoreniu okien, okrem spodneho M-x
+(defadvice keyboard-escape-quit (around my-keyboard-escape-quit activate)
+  (let (orig-one-window-p)
+    (fset 'orig-one-window-p (symbol-function 'one-window-p))
+    (fset 'one-window-p (lambda (&optional nomini all-frames) t))
+    (unwind-protect
+        ad-do-it
+      (fset 'one-window-p (symbol-function 'orig-one-window-p)))))
+
+
+;;case sensitive hladanie
+;;(setq case-fold-search nil) 
 
 ;;kurzor, box and bar
-(setq-default cursor-type 'box)
+;;(setq-default cursor-type 'box)
+(setq-default cursor-type 'bar)
 
 ;;zvyraznenie riadku
 ;;(global-hl-line-mode 1)
@@ -130,6 +147,7 @@
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
 (global-set-key (kbd "C-f") 'swiper)
+(global-set-key (kbd "C-S-f") 'swiper-thing-at-point)
 (global-set-key (kbd "C-c C-r") 'ivy-resume)
 (global-set-key (kbd "<f6>") 'ivy-resume)
 (global-set-key (kbd "M-x") 'counsel-M-x)
@@ -143,3 +161,6 @@
 (global-set-key (kbd "C-c j") 'counsel-git-grep)
 (global-set-key (kbd "C-c k") 'counsel-ag)
 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+
+
+
