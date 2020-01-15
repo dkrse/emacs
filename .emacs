@@ -4,11 +4,24 @@
 ;; You may delete these explanatory comments.
 
 (package-initialize)
+;;; excutable paths (for unix commands from MSYS and git from msysgit)
+
+;;auto reload file
+(global-auto-revert-mode t)
+;;only y, n
+(fset 'yes-or-no-p 'y-or-n-p)
+;;tab for... 
+(setq-default tab-width 4
+              indent-tabs-mode nil)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" default)))
  '(package-archives
    (quote
     (("melpa" . "http://melpa.org/packages/")
@@ -16,7 +29,7 @@
      ("org" . "http://orgmode.org/elpa/"))))
  '(package-selected-packages
    (quote
-    (phi-search wgrep undo-tree hlint-refactor clang-format idle-highlight-mode cmake-mode counsel-etags ac-etags helm-etags-plus helm-cscope helm company irony hydra magit color-theme swiper)))
+    (smex ripgrep exec-path-from-shell helm-gtags counsel-gtags company-ctags ctags-update auto-complete-exuberant-ctags ggtags phi-search wgrep undo-tree hlint-refactor clang-format idle-highlight-mode cmake-mode counsel-etags ac-etags helm-etags-plus helm-cscope helm company irony hydra magit color-theme swiper)))
  '(safe-local-variable-values (quote ((encoding . utf-8)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -162,5 +175,32 @@
 (global-set-key (kbd "C-c k") 'counsel-ag)
 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
 
+;; ak je subor vacsi nezasekava sa tak
+(setq jit-lock-defer-time 0)
+(setq fast-but-imprecise-scrolling t)
 
+ ;; pre vacsie subory
+  (defun check-large-file ()
+    (when (> (buffer-size) (* 1024 1024))
+      (when (y-or-n-p "Open file literally?")
+        ;;(setq buffer-read-only t)
+        (buffer-disable-undo)
+        (fundamental-mode))))
+  (add-hook 'find-file-hook 'check-large-file)
+
+;; highlight double click
+(defun highlight-thing-double-click ()
+   (interactive)
+   (highlight-symbol-at-point))
+ (global-set-key [double-mouse-1] 'highlight-thing-double-click)
+
+;;un-highlight
+(defun un-highlight ()
+  (interactive)
+  (unhighlight-regexp t))
+ 
+(defun run-bash ()
+      (interactive)
+      (let ((shell-file-name "C:/Program Files/Git/bin/bash.exe"))
+            (shell "*bash*")))
 
