@@ -6,6 +6,13 @@
 (package-initialize)
 ;;; excutable paths (for unix commands from MSYS and git from msysgit)
 
+
+;; no
+(setq make-backup-files nil)
+
+;;update dired files
+;;(revert-buffer) ;; g
+
 ;;auto reload file
 (global-auto-revert-mode t)
 ;;only y, n
@@ -70,6 +77,9 @@
 
 ;;highlight words
 ;;M-x(idle-highlight-mode)
+
+;;pocet riadkov, znakov, slov oznaceneho regionu
+;;M-=
 ;;--------------------------------------------------------------------------------------------------------
 
 ;;(load-theme 'sanityinc-solarized-dark t)
@@ -112,8 +122,8 @@
 
 ;;change size ctrl x ctrl + -
 ;;pismo
-(set-face-attribute 'default nil :height 105 :family "Consolas")
-;;(set-face-attribute 'default nil :height 110 :family "Fira Code")
+(set-face-attribute 'default nil :height 100 :family "Consolas")
+;;(set-face-attribute 'default nil :height 105 :family "Fira Code")
 
 ;;ukladanie
 ;;(setq backup-directory-alist '(("." . "~/emacs_saves")))
@@ -179,6 +189,9 @@
 (setq jit-lock-defer-time 0)
 (setq fast-but-imprecise-scrolling t)
 
+;;
+(setq recentf-auto-cleanup 'never)
+
  ;; pre vacsie subory
   (defun check-large-file ()
     (when (> (buffer-size) (* 1024 1024))
@@ -190,7 +203,8 @@
 
 ;; highlight double click
 (defun highlight-thing-double-click ()
-   (interactive)
+  (interactive)
+   (unhighlight-regexp t)
    (highlight-symbol-at-point))
  (global-set-key [double-mouse-1] 'highlight-thing-double-click)
 
@@ -202,5 +216,87 @@
 (defun run-bash ()
       (interactive)
       (let ((shell-file-name "C:/Program Files/Git/bin/bash.exe"))
-            (shell "*bash*")))
+        (shell "*bash*")))
 
+;;tento
+(defun rep-str (what with in)
+  (interactive)
+  (message "co = %S s =  %S v = %S" what with in)
+  (replace-regexp-in-string (regexp-quote what) with in nil 'literal))
+
+(defun test-fun (str)
+    (interactive)
+  (let ((ss (replace-regexp "[ ]+" "" "tento")))
+    (message ss)))
+
+(defun xx ()
+  "print current word."
+  (interactive)
+  (message "%s" (thing-at-point 'word)))
+
+
+(setq prettify-symbols-unprettify-at-point 'right-edge)
+(setq inhibit-compacting-font-caches t)
+
+;;moje moje mi xxx moje moja moje
+
+;;(defun echo-char ()
+;;  (if (eq this-command 'self-insert-command)
+;;      (message "Inserted %s" (save-excursion
+;;                               (backward-char)
+;;                               (thing-at-point 'char)))))
+
+;;(add-hook 'x- #'echo-char)
+
+;;(with-selected-window (get-buffer-window YOUR-BUFFER)
+;;  (goto-char (point-max)))
+
+(defun foo () (insert "ABCDE"))
+;;(add-hook 'find-file-hook)
+;;(add-hook 'post-self-insert-hook #'foo)
+
+;;doplni meno suboru... 
+(autoload 'comint-dynamic-complete-filename "comint" nil t)
+(global-set-key (kbd "C-x t") 'comint-dynamic-complete-filename)
+
+(defun akt-dat ()
+  "Insert string for the current time formatted like '2:34 PM'."
+  (interactive)                 ; permit invocation in minibuffer
+  (insert (format-time-string  "%Y-%m-%d %T")))
+
+;;----------------------------------------------------------------------------
+;;copy paste s oznacenym suborom  
+(defun filter-buffer-substring-add-line (func beg end delete)
+  (concat
+   (format "//---> line:%5d file: [%s]\n"
+           (line-number-at-pos beg)
+           (or (buffer-file-name) (buffer-name)))
+   (funcall func beg end delete)
+   (format "\n//<--- line:%5d" (line-number-at-pos end))))
+
+(defun int-mod ()
+  (interactive)
+  (if (memq 'filter-buffer-substring-add-line
+            filter-buffer-substring-functions)
+      (progn
+        (setq filter-buffer-substring-functions
+              (delq 'filter-buffer-substring-add-line
+                    filter-buffer-substring-functions))
+        (message "int-mod je off!"))
+    (push 'filter-buffer-substring-add-line
+          filter-buffer-substring-functions)
+    (message "int-mod je on!")))
+
+;;----------------------------------------------------------------------------
+
+
+(add-hook 'find-file-hook
+  (lambda ()
+    (setq hl-line-mode +1)))
+
+
+(defun meno-suboru ()
+  (when (string= (file-name-nondirectory (buffer-file-name)) "moj.txt")
+    ;;(toggle-truncate-lines 1)
+      (global-hl-line-mode 1)))
+(add-hook 'find-file-hook 'meno-suboru)
