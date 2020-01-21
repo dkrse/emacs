@@ -89,6 +89,15 @@
 ;;(setq ido-everywhere t)
 ;;(ido-mode 1)
 
+;;scroll mouse slower
+
+;; don't accelerate scrolling
+(setq mouse-wheel-progressive-speed nil)
+
+;; scroll window under mouse
+(setq mouse-wheel-follow-mouse 't) 
+
+
 ;;bez toolbaru
 (tool-bar-mode -1)
 
@@ -108,6 +117,10 @@
     (unwind-protect
         ad-do-it
       (fset 'one-window-p (symbol-function 'orig-one-window-p)))))
+
+
+(global-set-key (kbd "<C-mouse-4>") (lambda () (interactive) (text-scale-decrease 1)))
+(global-set-key (kbd "<C-mouse-wheel-up>") (lambda () (interactive) (text-scale-increase 1)))
 
 
 ;;case sensitive hladanie
@@ -171,19 +184,11 @@
 (setq enable-recursive-minibuffers t)
 (global-set-key (kbd "C-f") 'swiper)
 (global-set-key (kbd "C-S-f") 'swiper-thing-at-point)
-(global-set-key (kbd "C-c C-r") 'ivy-resume)
-(global-set-key (kbd "<f6>") 'ivy-resume)
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-o") 'counsel-find-file)
-(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-(global-set-key (kbd "<f1> l") 'counsel-find-library)
-(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-(global-set-key (kbd "C-c g") 'counsel-git)
-(global-set-key (kbd "C-c j") 'counsel-git-grep)
-(global-set-key (kbd "C-c k") 'counsel-ag)
-(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+(global-set-key (kbd "C-x n") 'create-new-buffer)
+
+;;(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
 
 ;; ak je subor vacsi nezasekava sa tak
 (setq jit-lock-defer-time 0)
@@ -205,7 +210,8 @@
 (defun highlight-thing-double-click ()
   (interactive)
    (unhighlight-regexp t)
-   (highlight-symbol-at-point))
+   (highlight-symbol-at-point)
+   )
  (global-set-key [double-mouse-1] 'highlight-thing-double-click)
 
 ;;un-highlight
@@ -289,14 +295,29 @@
 
 ;;----------------------------------------------------------------------------
 
-
 (add-hook 'find-file-hook
   (lambda ()
     (setq hl-line-mode +1)))
-
 
 (defun meno-suboru ()
   (when (string= (file-name-nondirectory (buffer-file-name)) "moj.txt")
     ;;(toggle-truncate-lines 1)
       (global-hl-line-mode 1)))
 (add-hook 'find-file-hook 'meno-suboru)
+
+;;vytvori novy buffer
+(defun create-new-buffer ()
+  (interactive)
+  (switch-to-buffer (generate-new-buffer "buffer")))
+
+
+(require 'hi-lock)
+(defun jpt-toggle-mark-word-at-point ()
+  (interactive)
+  (if hi-lock-interactive-patterns
+      (unhighlight-regexp (car (car hi-lock-interactive-patterns)))
+    (highlight-symbol-at-point)))
+
+(global-set-key (kbd "M-,") 'jpt-toggle-mark-word-at-point)
+
+
