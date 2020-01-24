@@ -193,6 +193,8 @@
 (global-set-key (kbd "M-x") 'counsel-M-x)
 (global-set-key (kbd "C-o") 'counsel-find-file)
 (global-set-key (kbd "C-x n") 'create-new-buffer)
+;;find string under cursor in files
+(global-set-key (kbd "<f3>") 'recursive-grep)
 
 ;;(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
 
@@ -366,3 +368,37 @@
 
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
 ;;(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+
+;;for grep in ms windows
+(setenv "PATH"
+  (concat
+   ;; Change this with your path to MSYS bin directory
+   "c:\\Program Files\\Git\\usr\\bin;"
+   (getenv "PATH")))
+
+(add-to-list 'exec-path "c:\\Program Files\\Git\\usr\\bin;")
+(setenv "PATH" (mapconcat #'identity exec-path path-separator))
+
+;;najde retazec v suboroch...
+;; i -  case insensitive
+;; n - print line number;
+;; I - ignore binary files
+;; E - extended regular expressions;
+;; r - recursive"
+(defun recursive-grep ()
+(interactive)
+  (let* ((search-term (read-string "find in files:  "(thing-at-point 'word 'no-properties)))
+         (search-path
+           (directory-file-name (expand-file-name (read-directory-name "directory:  "))))
+         (default-directory (file-name-as-directory search-path))
+         (grep-command
+           (concat
+             grep-program
+             " "
+             "-nIEr --color=always"
+             " "
+             search-term
+             " "
+             search-path)))
+    (compilation-start grep-command 'grep-mode (lambda (mode) "*grep*") nil)))
+
