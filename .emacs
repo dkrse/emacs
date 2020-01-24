@@ -36,7 +36,7 @@
      ("org" . "http://orgmode.org/elpa/"))))
  '(package-selected-packages
    (quote
-    (smex ripgrep exec-path-from-shell helm-gtags counsel-gtags company-ctags ctags-update auto-complete-exuberant-ctags ggtags phi-search wgrep undo-tree hlint-refactor clang-format idle-highlight-mode cmake-mode counsel-etags ac-etags helm-etags-plus helm-cscope helm company irony hydra magit color-theme swiper)))
+    (smooth-scrolling scroll-restore smex ripgrep exec-path-from-shell helm-gtags counsel-gtags company-ctags ctags-update auto-complete-exuberant-ctags ggtags phi-search wgrep undo-tree hlint-refactor clang-format idle-highlight-mode cmake-mode counsel-etags ac-etags helm-etags-plus helm-cscope helm company irony hydra magit color-theme swiper)))
  '(safe-local-variable-values (quote ((encoding . utf-8)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -46,6 +46,12 @@
  )
 
  ;--------------------------------------------------------------------------------------------------------
+
+;;hladanie retazca
+;;ctrl + f + hladanie retazca
+;;ctrl + shift + f - hladanie retazca na poziicii kurzora
+;;M-s . - hladanie retazca na poziicii kurzora, pohyb Ctrl+s
+
 ;;zvacsenie zmansenie pisma
 ;;ctrl x ctrl +
 ;;ctrl x ctrl -
@@ -211,8 +217,20 @@
   (interactive)
    (unhighlight-regexp t)
    (highlight-symbol-at-point)
+;;   (backward-word)
+;;   (mark-word)
    )
- (global-set-key [double-mouse-1] 'highlight-thing-double-click)
+(global-set-key [double-mouse-1] 'highlight-thing-double-click)
+
+
+(require 'hi-lock)
+(defun jpt-toggle-mark-word-at-point ()
+  (interactive)
+  (if hi-lock-interactive-patterns
+      (unhighlight-regexp (car (car hi-lock-interactive-patterns)))
+    (highlight-symbol-at-point)))
+
+;;(global-set-key [double-mouse-1] 'jpt-toggle-mark-word-at-point)
 
 ;;un-highlight
 (defun un-highlight ()
@@ -320,4 +338,31 @@
 
 (global-set-key (kbd "M-,") 'jpt-toggle-mark-word-at-point)
 
+;;anotacia todo:
+(defun annotate-todo ()
+  "put fringe marker on TODO: lines in the curent buffer"
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "TODO:" nil t)
+      (let ((overlay (make-overlay (- (point) 5) (point))))
+        (overlay-put overlay
+                     'before-string (propertize "A"
+                                                'display'(left-fringe right-triangle)))))))
 
+(set-window-margins nil 1)
+(set-fringe-mode 0)
+
+
+;; (defun gcm-scroll-down ()
+;;       (interactive)
+;;       (scroll-up 1))
+;;     (defun gcm-scroll-up ()
+;;       (interactive)
+;;       (scroll-down 1))
+;;     (global-set-key [(control down)] 'gcm-scroll-down)
+;;     (global-set-key [(control up)]   'gcm-scroll-up)
+;; 
+
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+;;(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
