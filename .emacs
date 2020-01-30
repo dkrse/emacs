@@ -36,8 +36,11 @@
      ("org" . "http://orgmode.org/elpa/"))))
  '(package-selected-packages
    (quote
-    (smooth-scrolling scroll-restore smex ripgrep exec-path-from-shell helm-gtags counsel-gtags company-ctags ctags-update auto-complete-exuberant-ctags ggtags phi-search wgrep undo-tree hlint-refactor clang-format idle-highlight-mode cmake-mode counsel-etags ac-etags helm-etags-plus helm-cscope helm company irony hydra magit color-theme swiper)))
- '(safe-local-variable-values (quote ((encoding . utf-8)))))
+    (projectile smooth-scrolling scroll-restore smex ripgrep exec-path-from-shell helm-gtags counsel-gtags company-ctags ctags-update auto-complete-exuberant-ctags ggtags phi-search wgrep undo-tree hlint-refactor clang-format idle-highlight-mode cmake-mode counsel-etags ac-etags helm-etags-plus helm-cscope helm company irony hydra magit color-theme swiper)))
+ '(safe-local-variable-values
+   (quote
+    ((projectile-tags-file-name . testik)
+     (encoding . utf-8)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -45,8 +48,20 @@
  ;; If there is more than one, they won't work right.
  )
 
- ;--------------------------------------------------------------------------------------------------------
+;--------------------------------------------------------------------------------------------------------
+;; projectile
+(setq projectile-use-git-grep t)
 
+
+
+;; projectile
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+;;tema
+(load-theme 'sanityinc-solarized-light t)
+ 
 ;;hladanie retazca
 ;;ctrl + f + hladanie retazca
 ;;ctrl + shift + f - hladanie retazca na poziicii kurzora
@@ -96,6 +111,10 @@
 ;;(ido-mode 1)
 
 ;;scroll mouse slower
+
+;;normal text mode--
+(setq initial-major-mode 'text-mode)
+
 
 ;; don't accelerate scrolling
 (setq mouse-wheel-progressive-speed nil)
@@ -161,6 +180,8 @@
 (global-set-key (kbd "C-a") 'mark-whole-buffer)
 (global-set-key (kbd "C-s") 'save-buffer)
 (global-set-key (kbd "C-x C-r") 'recentf-open-files)
+
+(global-set-key (kbd "<f7>") (kbd "C-u C-c C-c"))
 
 ;;ctrl x 2 --split horizontal
 ;;ctrl x 3 --split vertical
@@ -402,3 +423,5 @@
              search-path)))
     (compilation-start grep-command 'grep-mode (lambda (mode) "*grep*") nil)))
 
+
+	
